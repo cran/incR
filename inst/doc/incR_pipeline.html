@@ -69,14 +69,14 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">incR Working Pipeline</h1>
 <h4 class="author"><em>Pablo Capilla-Lasheras</em></h4>
-<h4 class="date"><em>20 July, 2017</em></h4>
+<h4 class="date"><em>20 October, 2017</em></h4>
 
 
 
-<p><em>This vignette was created using <code>incR</code> version 0.3.1 and R version 3.4.1 (2017-06-30).</em></p>
+<p><em>This vignette was created using <code>incR</code> version 1.0.1 and R version 3.4.1 (2017-06-30).</em></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This vignette serves as an example of the suggested <code>incR</code> working pipeline. The accuracy of the method is found in another vignette which will be publicly available soon. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
+<p>This vignette serves as an example of the suggested <code>incR</code> working pipeline. Testing the accuracy of the method can be found in another vignette which will be publicly available soon. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
 </div>
 <div id="incr-working-pipeline" class="section level1">
 <h1><code>incR</code> working pipeline</h1>
@@ -93,7 +93,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 4 06/05/2015 21:49      32.205
 ## 5 06/05/2015 21:52      32.205
 ## 6 06/05/2015 21:54      32.143</code></pre>
-<p><code>incRprep</code> takes these data and simply adds new columns that are going to be useful for other components of the pipeline. Please, do not use <em>date</em> as the name of the date/time column. <code>incRprep</code> will create a new column named <em>date</em> and will, therefore, produce an error if such a name is found in the raw data table.</p>
+<p><code>incRprep</code> takes these data and simply adds new columns that are going to be useful for other components of the pipeline. Please, do not use <em>date</em> as the name of the date/time column. <code>incRprep</code> will create a new column named <em>date</em> and will, therefore, produce an error if such a name is already found in the raw data table.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incR_rawdata_prep &lt;-<span class="st"> </span><span class="kw">incRprep</span>(<span class="dt">data =</span> incR_rawdata,
                                     <span class="dt">date.name =</span> <span class="st">&quot;DATE&quot;</span>,
                                     <span class="dt">date.format=</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>,
@@ -141,8 +141,8 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 </div>
 <div id="automatic-incubation-scoring-incrscan" class="section level2">
 <h2>Automatic incubation scoring: <code>incRscan</code></h2>
-<p>After using <code>incRprep</code> and <code>incRenv</code>, our data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating. <code>incRscan</code> classifies presence or absence of the incubating individual (incubation score) for every line in the data set. The details of the algorithm can be read here: <em>LINK TO PAPER</em>.</p>
-<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can come up with the best combination of parameters. This approach may also serve as a quality checking step as <code>incRscan</code> performance is thought to drop when data quality decrease. For this example, we use parameter values known to work well (in this case <code>incRscan</code> correctly scores over 95% of the data points).</p>
+<p>After using <code>incRprep</code> and <code>incRenv</code>, our data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating. <code>incRscan</code> classifies presence or absence of the incubating individual (incubation score) for every line in the data set. The details of the algorithm can be read here: <em>LINK TO PAPER COMING SOON</em>.</p>
+<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can come up with the best combination of parameters. This approach may also serve as a quality checking step as <code>incRscan</code> performance is thought to drop when data quality decrease. A package vignette will be available soon showing how to perform such calibration. For this example, we use parameter values known to work well (in this case <code>incRscan</code> correctly scores over 95% of the data points).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incubation.analysis &lt;-<span class="st"> </span><span class="kw">incRscan</span> (<span class="dt">data=</span>incR_data, 
                                    <span class="dt">temp.name=</span><span class="st">&quot;temperature&quot;</span>,
                                    <span class="dt">lower.time=</span><span class="dv">22</span>,
@@ -189,25 +189,25 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 <div id="incubation-constancy" class="section level3">
 <h3>Incubation constancy</h3>
 <p>This is defined and calculated as the percentage of daily time spent in the nest.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRconstancy</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRatt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</code></pre></div>
 <pre><code>##         date percentage_in
 ## 1 2015-05-07      78.64583
 ## 2 2015-05-08      68.63354</code></pre>
 </div>
 <div id="incubation-activity" class="section level3">
 <h3>Incubation activity</h3>
-<p><code>incRactivity</code> calculates onset and end of activity: firs off-bout in the morning and last on-bout in the evening.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRactivity</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]],
+<p><code>incRact</code> calculates onset and end of activity: firs off-bout in the morning and last on-bout in the evening.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRact</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]],
              <span class="dt">time_column =</span> <span class="st">&quot;time&quot;</span>,
              <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</code></pre></div>
 <pre><code>##         date first_offbout last_onbout
 ## 1 2015-05-07         05:47       20:49
 ## 2 2015-05-08         05:52       13:14</code></pre>
-<p>Note that if temperature data exists for the entire day, <code>first_offbout</code> and <code>last_onbout</code> times correspond to onset and end of activity. Biological interpretation of the times yielded by <code>incRconstancy</code> is needed - e.g., in the example above, <code>last_onbout</code> for May 8 is not telling us end of daily activity but rather the last on-bout in an uncompleted day of temperature recordings.</p>
+<p>Note that if temperature data exists for the entire day, <code>first_offbout</code> and <code>last_onbout</code> times correspond to onset and end of activity. Biological interpretation of the times yielded by <code>incRatt</code> is needed - e.g., in the example above, <code>last_onbout</code> for May 8 is not telling us the end of daily activity but rather the last on-bout in an uncompleted day of temperature recordings.</p>
 </div>
 <div id="incubation-temperatures" class="section level3">
 <h3>Incubation temperatures</h3>
-<p>This function offers three options. To calculate temperature averages and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRactivity</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as times for calculation.</p>
+<p>This function offers three options. To calculate temperature averages and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as times for calculation.</p>
 <p><strong>1</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
       <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
@@ -224,7 +224,7 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
       <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
       <span class="dt">limits =</span> <span class="ot">NULL</span>,                 
       <span class="dt">coor =</span> <span class="ot">NULL</span>, 
-      <span class="dt">activity.times =</span> <span class="ot">TRUE</span>,          <span class="co"># incRactivity is called to define time window</span>
+      <span class="dt">activity.times =</span> <span class="ot">TRUE</span>,          <span class="co"># incRact is called to define time window</span>
       <span class="dt">civil.twilight =</span> <span class="ot">FALSE</span>, 
       <span class="dt">time.zone =</span> <span class="st">&quot;GMT&quot;</span>,
       <span class="dt">time_column=</span> <span class="st">&quot;time&quot;</span>,
@@ -248,10 +248,10 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 <h3>Calculation of on and off-bouts</h3>
 <p><code>incRbout</code> calculates i) the number of on and off-bouts per day along with their average duration and ii) the starting time, duration, starting temperature and final temperature for every on and off-bout detected by <code>incRscan</code>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bouts &lt;-<span class="st"> </span><span class="kw">incRbouts</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
-          <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>,
-          <span class="dt">sampling.rate =</span> incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">56</span>] <span class="op">-</span><span class="st"> </span>incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">55</span>],   <span class="co"># sampling interval</span>
-          <span class="dt">dec_time =</span> <span class="st">&quot;dec_time&quot;</span>,
-          <span class="dt">temp =</span> <span class="st">&quot;temperature&quot;</span>)
+                   <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>,
+                   <span class="dt">sampling.rate =</span> incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">56</span>] <span class="op">-</span><span class="st"> </span>incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">55</span>],   <span class="co"># sampling interval</span>
+                   <span class="dt">dec_time =</span> <span class="st">&quot;dec_time&quot;</span>,
+                   <span class="dt">temp =</span> <span class="st">&quot;temperature&quot;</span>)
 
 <span class="co"># bouts per day</span>
 <span class="kw">head</span>(bouts<span class="op">$</span>day_bouts)</code></pre></div>
@@ -270,6 +270,8 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 ## 4 2015-05-07 offbout      7.733     0.55     31.206     18.829
 ## 5 2015-05-07  onbout      8.200     1.15     19.831     33.141
 ## 6 2015-05-07 offbout      9.150     0.20     32.080     27.959</code></pre>
+<hr />
+<p>Please, if you use the package, cite it as: <em>Citation coming soon</em></p>
 </div>
 </div>
 </div>

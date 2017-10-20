@@ -29,8 +29,8 @@
 #'            dec_time="dec_time",
 #'            temp="temperature",
 #'            sampling.rate=240) # sampling rate in seconds.
-#' @seealso \code{\link{incRprep}} \code{\link{incRscan}} \code{\link{incRactivity}}
-#' \code{\link{incRconstancy}}
+#' @seealso \code{\link{incRprep}} \code{\link{incRscan}} \code{\link{incRact}}
+#' \code{\link{incRatt}}
 #' @export
 incRbouts <- function (data, vector.incubation, dec_time, temp, sampling.rate) {
   ##### CHECKING FOR COLUMN NAMES #####
@@ -46,23 +46,17 @@ incRbouts <- function (data, vector.incubation, dec_time, temp, sampling.rate) {
                                  number.off.bouts=base::rep(NA, length=base::length(df01)),
                                  mean.time.on.bout=base::rep(NA, length=base::length(df01)),
                                  mean.time.off.bout=base::rep(NA, length=base::length(df01)))
-  # defining table to write results in
-  data.bouts <- base::data.frame (date=base::rep(NA, length=base::length(df01)),
-                                 number.on.bouts=base::rep(NA, length=base::length(df01)),
-                                 number.off.bouts=base::rep(NA, length=base::length(df01)),
-                                 mean.time.on.bout=base::rep(NA, length=base::length(df01)),
-                                 mean.time.off.bout=base::rep(NA, length=base::length(df01)))
   
   # loop to fill table of results
   ## if only 2 days
-  if (base::length(df01)==2){
-    final.loop <- 2
-  } else {                              ## if more than 2 days...
-    final.loop <- base::length(df01)-1}
+  #if (base::length(df01)==2){
+   # final.loop <- 2
+  #} else {                              ## if more than 2 days...
+   # final.loop <- base::length(df01)-1}
   
   # bout specific data table
   list.bouts <- base::as.list(NA)
-  for (k in 1:final.loop) {
+  for (k in 1:length(df01)) {
     df00 <- df01[[k]] 
     # per day data
     rle_incR_score_values <- base::rle(df00[[vector.incubation]])$values
@@ -104,13 +98,12 @@ incRbouts <- function (data, vector.incubation, dec_time, temp, sampling.rate) {
   
   # day specific data table
   # for each day
-  for (k in 1:final.loop) {
+  for (k in 1:length(df01)){#1:final.loop) {
     # selecting working day
     df00 <- df01[[k]] 
-    data.days$date[k] <- base::as.character(base::unique (df00$date))  # working date
     
-    # order data by date-time
-    df00 <- df00[base::order(lubridate::dmy_hm(df00$DATE)),]
+  
+    data.days$date[k] <- base::as.character(base::unique (df00$date))  # working date
     
     # per day data
     rle_incR_score_values <- base::rle(df00[[vector.incubation]])$values

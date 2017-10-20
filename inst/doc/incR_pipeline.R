@@ -43,10 +43,10 @@ head(incubation.analysis[[1]])
 head(incubation.analysis[[2]])
 
 ## ------------------------------------------------------------------------
-incRconstancy(data = incubation.analysis[[1]], vector.incubation = "incR_score")
+incRatt(data = incubation.analysis[[1]], vector.incubation = "incR_score")
 
 ## ------------------------------------------------------------------------
-incRactivity(data = incubation.analysis[[1]],
+incRact(data = incubation.analysis[[1]],
              time_column = "time",
              vector.incubation = "incR_score")
 
@@ -64,7 +64,7 @@ incRt(data = incubation.analysis[[1]],
       temp.name = "temperature", 
       limits = NULL,                 
       coor = NULL, 
-      activity.times = TRUE,          # incRactivity is called to define time window
+      activity.times = TRUE,          # incRact is called to define time window
       civil.twilight = FALSE, 
       time.zone = "GMT",
       time_column= "time",
@@ -81,10 +81,10 @@ incRt(data = incubation.analysis[[1]],
 
 ## ----eval = TRUE---------------------------------------------------------
 bouts <- incRbouts(data = incubation.analysis[[1]], 
-          vector.incubation = "incR_score",
-          sampling.rate = incubation.analysis[[1]]$dec_time[56] - incubation.analysis[[1]]$dec_time[55],   # sampling interval
-          dec_time = "dec_time",
-          temp = "temperature")
+                   vector.incubation = "incR_score",
+                   sampling.rate = incubation.analysis[[1]]$dec_time[56] - incubation.analysis[[1]]$dec_time[55],   # sampling interval
+                   dec_time = "dec_time",
+                   temp = "temperature")
 
 # bouts per day
 head(bouts$day_bouts)

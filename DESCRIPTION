@@ -1,8 +1,8 @@
 Package: incR
 Type: Package
 Title: Analysis of Incubation Data
-Version: 0.3.1
-Date: 2017-07-20
+Version: 1.0.1
+Date: 2017-10-20
 Authors@R: person ("Pablo", "Capilla-Lasheras", email="pacapilla@gmail.com", role=c("aut",
     "cre"))
 Author: Pablo Capilla-Lasheras [aut, cre]
@@ -23,6 +23,6 @@ VignetteBuilder: knitr
 LazyData: true
 RoxygenNote: 6.0.1
 NeedsCompilation: no
-Packaged: 2017-07-20 15:09:43 UTC; pc395
+Packaged: 2017-10-20 08:23:40 UTC; pc395
 Repository: CRAN
-Date/Publication: 2017-07-20 15:16:35 UTC
+Date/Publication: 2017-10-20 08:29:22 UTC
