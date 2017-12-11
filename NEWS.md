@@ -1,6 +1,12 @@
+# incR 1.0.2
+* Description of the package available on bioRxiv
+* Updated package vignette
+* updated documentation for incRt and incRbouts
+
+
 # incR 1.0.1
 * bug in incRt fixed
-* version release to CRAN
+* major version release to CRAN
 
 # incR 1.0.0.9000
 * incRconstancy changed by incRatt

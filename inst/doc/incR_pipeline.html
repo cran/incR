@@ -12,6 +12,7 @@
 
 <meta name="author" content="Pablo Capilla-Lasheras" />
 
+<meta name="date" content="2017-11-30" />
 
 <title>incR Working Pipeline</title>
 
@@ -69,20 +70,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">incR Working Pipeline</h1>
 <h4 class="author"><em>Pablo Capilla-Lasheras</em></h4>
-<h4 class="date"><em>20 October, 2017</em></h4>
+<h4 class="date"><em>2017-11-30</em></h4>
 
 
 
-<p><em>This vignette was created using <code>incR</code> version 1.0.1 and R version 3.4.1 (2017-06-30).</em></p>
+<p><em>This vignette was created using <code>incR</code> version 1.0.2 and R version 3.4.1 (2017-06-30).</em></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This vignette serves as an example of the suggested <code>incR</code> working pipeline. Testing the accuracy of the method can be found in another vignette which will be publicly available soon. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
+<p>This vignette serves as an example for the suggested <code>incR</code> working pipeline. Testing the accuracy of the method can be found in a manuscript that will be available soon. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
 </div>
 <div id="incr-working-pipeline" class="section level1">
 <h1><code>incR</code> working pipeline</h1>
 <div id="data-preparation-incrprep" class="section level2">
 <h2>Data preparation: <code>incRprep</code></h2>
-<p>The data set contains raw nest temperature data coming from an iButton device (Maxim Integrated Products) and has two columns, date/time and temperature values in ºC. Several files, from the same nest where combined to create a completed nest temperature file.</p>
+<p>The data set contains raw nest temperature data coming from an iButton device (Maxim Integrated Products) and has two columns, date/time and temperature values in Celsius Degrees. Several files, from the same nest where combined to create a completed nest temperature file.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;incR&quot;</span>)
 <span class="kw">data</span>(<span class="st">&quot;incR_rawdata&quot;</span>)  <span class="co"># loading the data</span>
 <span class="kw">head</span>(incR_rawdata)</code></pre></div>
@@ -141,8 +142,8 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 </div>
 <div id="automatic-incubation-scoring-incrscan" class="section level2">
 <h2>Automatic incubation scoring: <code>incRscan</code></h2>
-<p>After using <code>incRprep</code> and <code>incRenv</code>, our data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating. <code>incRscan</code> classifies presence or absence of the incubating individual (incubation score) for every line in the data set. The details of the algorithm can be read here: <em>LINK TO PAPER COMING SOON</em>.</p>
-<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can come up with the best combination of parameters. This approach may also serve as a quality checking step as <code>incRscan</code> performance is thought to drop when data quality decrease. A package vignette will be available soon showing how to perform such calibration. For this example, we use parameter values known to work well (in this case <code>incRscan</code> correctly scores over 95% of the data points).</p>
+<p>After using <code>incRprep</code> and <code>incRenv</code>, the data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating. <code>incRscan</code> classifies presence or absence of the incubating individual (incubation score) for every raw (i.e. time point) in the data set. The details of the algorithm will be available soon.</p>
+<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example, video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can decide on the best combination of parameters. This approach may also serve as a quality checking step as <code>incRscan</code> performance is thought to drop when data quality decreases. For this example, we use parameter values known to work well for this data set (in this case <code>incRscan</code> correctly scores over 95% of the data points).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incubation.analysis &lt;-<span class="st"> </span><span class="kw">incRscan</span> (<span class="dt">data=</span>incR_data, 
                                    <span class="dt">temp.name=</span><span class="st">&quot;temperature&quot;</span>,
                                    <span class="dt">lower.time=</span><span class="dv">22</span>,
@@ -207,7 +208,7 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 </div>
 <div id="incubation-temperatures" class="section level3">
 <h3>Incubation temperatures</h3>
-<p>This function offers three options. To calculate temperature averages and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as times for calculation.</p>
+<p>This function offers three options. To calculate temperature averages and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as the temporal window for calculation.</p>
 <p><strong>1</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
       <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 

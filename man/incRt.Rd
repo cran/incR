@@ -48,9 +48,9 @@ window.
 }
 \description{
 Calculation of temperature average and variation between two customised
-time periods per day. Originally, this function was thought to calculate nest temperature
-between day and night. 'Day' and 'night' being defined either by the user, 
-by activity times or by civil twilight times.
+time periods per day. Time windows can be defined by the user using the \code{limits} argument,
+defined by bird activity time (using the \code{activity.times} parameter) or set according to
+twilight times if coordinates are provided (\code{coor}).
 }
 \examples{
 # loading example data
