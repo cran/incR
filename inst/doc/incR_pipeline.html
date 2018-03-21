@@ -12,7 +12,7 @@
 
 <meta name="author" content="Pablo Capilla-Lasheras" />
 
-<meta name="date" content="2017-11-30" />
+<meta name="date" content="2018-03-17" />
 
 <title>incR Working Pipeline</title>
 
@@ -70,20 +70,20 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">incR Working Pipeline</h1>
 <h4 class="author"><em>Pablo Capilla-Lasheras</em></h4>
-<h4 class="date"><em>2017-11-30</em></h4>
+<h4 class="date"><em>2018-03-17</em></h4>
 
 
 
-<p><em>This vignette was created using <code>incR</code> version 1.0.2 and R version 3.4.1 (2017-06-30).</em></p>
+<p><em>This vignette was created using <code>incR</code> version 1.1.0 and R version 3.4.4 (2018-03-15).</em></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This vignette serves as an example for the suggested <code>incR</code> working pipeline. Testing the accuracy of the method can be found in a manuscript that will be available soon. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
+<p>This document serves as an example for a suggested <code>incR</code> working pipeline. I have tested the accuracy of the method and the results of such validation can be found <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">here</a>. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
 </div>
 <div id="incr-working-pipeline" class="section level1">
 <h1><code>incR</code> working pipeline</h1>
 <div id="data-preparation-incrprep" class="section level2">
 <h2>Data preparation: <code>incRprep</code></h2>
-<p>The data set contains raw nest temperature data coming from an iButton device (Maxim Integrated Products) and has two columns, date/time and temperature values in Celsius Degrees. Several files, from the same nest where combined to create a completed nest temperature file.</p>
+<p>The data table contains raw nest temperatures coming from an iButton device (Maxim Integrated Products) and has two columns, date/time and temperature values in Celsius degrees. Several files, from the same nest where combined to create a completed nest temperature file.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;incR&quot;</span>)
 <span class="kw">data</span>(<span class="st">&quot;incR_rawdata&quot;</span>)  <span class="co"># loading the data</span>
 <span class="kw">head</span>(incR_rawdata)</code></pre></div>
@@ -94,12 +94,12 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 4 06/05/2015 21:49      32.205
 ## 5 06/05/2015 21:52      32.205
 ## 6 06/05/2015 21:54      32.143</code></pre>
-<p><code>incRprep</code> takes these data and simply adds new columns that are going to be useful for other components of the pipeline. Please, do not use <em>date</em> as the name of the date/time column. <code>incRprep</code> will create a new column named <em>date</em> and will, therefore, produce an error if such a name is already found in the raw data table.</p>
+<p><code>incRprep</code> takes these data and simply adds new columns that are going to be useful for other components of the pipeline. Please, do not use <em>date</em> as the name of the date/time column. <code>incRprep</code> will create a new column named <em>date</em> and will, therefore, produce an error if such a name is already found in the raw data table. See ?incRprep to find information about the new columns added by this function.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incR_rawdata_prep &lt;-<span class="st"> </span><span class="kw">incRprep</span>(<span class="dt">data =</span> incR_rawdata,
-                                    <span class="dt">date.name =</span> <span class="st">&quot;DATE&quot;</span>,
-                                    <span class="dt">date.format=</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>,
-                                    <span class="dt">timezone=</span><span class="st">&quot;GMT&quot;</span>,
-                                    <span class="dt">temperature.name=</span><span class="st">&quot;temperature&quot;</span>)
+                              <span class="dt">date.name =</span> <span class="st">&quot;DATE&quot;</span>,
+                              <span class="dt">date.format=</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>,
+                              <span class="dt">timezone=</span><span class="st">&quot;GMT&quot;</span>,
+                              <span class="dt">temperature.name=</span><span class="st">&quot;temperature&quot;</span>)
 <span class="kw">head</span>(incR_rawdata_prep, <span class="dv">3</span>)</code></pre></div>
 <pre><code>##               DATE temperature index  time hour minute       date dec_time
 ## 1 06/05/2015 21:42      32.018     1 21:42   21     42 2015-05-06 21.70000
@@ -142,14 +142,14 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 </div>
 <div id="automatic-incubation-scoring-incrscan" class="section level2">
 <h2>Automatic incubation scoring: <code>incRscan</code></h2>
-<p>After using <code>incRprep</code> and <code>incRenv</code>, the data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating. <code>incRscan</code> classifies presence or absence of the incubating individual (incubation score) for every raw (i.e. time point) in the data set. The details of the algorithm will be available soon.</p>
-<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example, video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can decide on the best combination of parameters. This approach may also serve as a quality checking step as <code>incRscan</code> performance is thought to drop when data quality decreases. For this example, we use parameter values known to work well for this data set (in this case <code>incRscan</code> correctly scores over 95% of the data points).</p>
+<p>After using <code>incRprep</code> and <code>incRenv</code>, the data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating, <code>incRscan</code> determines presence or absence of the incubating individual (incubation score) for every data point (i.e. time point) in the data set. For details about the algorithm follow <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">this link</a>.</p>
+<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example, video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can decide on the best combination of parameters. This approach may also serve as a quality-checking step as <code>incRscan</code> performance is thought to drop when data quality decreases. For this example, we use parameter values known to work well for this data set (see this <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">LINK</a> for more information).</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incubation.analysis &lt;-<span class="st"> </span><span class="kw">incRscan</span> (<span class="dt">data=</span>incR_data, 
                                    <span class="dt">temp.name=</span><span class="st">&quot;temperature&quot;</span>,
                                    <span class="dt">lower.time=</span><span class="dv">22</span>,
                                    <span class="dt">upper.time=</span><span class="dv">3</span>,
                                    <span class="dt">sensitivity=</span><span class="fl">0.15</span>,
-                                   <span class="dt">temp.diff=</span><span class="dv">5</span>,
+                                   <span class="dt">temp.diff.threshold =</span><span class="dv">5</span>,
                                    <span class="dt">maxNightVariation=</span><span class="dv">2</span>,
                                    <span class="dt">env.temp=</span><span class="st">&quot;env_temp&quot;</span>)</code></pre></div>
 <pre><code>## [1] &quot;No night reference period for  2015-05-06  - day skipped&quot;</code></pre>
@@ -158,7 +158,7 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(incubation.analysis)</code></pre></div>
 <pre><code>## [1] &quot;incRscan_data&quot;      &quot;incRscan_threshold&quot;</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># incRscan output</span>
-<span class="kw">head</span>(incubation.analysis[[<span class="dv">1</span>]])</code></pre></div>
+<span class="kw">head</span>(incubation.analysis<span class="op">$</span>incRscan_data)</code></pre></div>
 <pre><code>##                DATE temperature index  time hour minute       date
 ## 1              &lt;NA&gt;          NA    NA  &lt;NA&gt;   NA     NA       &lt;NA&gt;
 ## 57 07/05/2015 00:02      31.456    57 00:02    0      2 2015-05-07
@@ -173,7 +173,7 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 ## 59 0.11666667  0.125   6.7945          1
 ## 60 0.15000000  0.187   6.7945          1
 ## 61 0.20000000 -0.063   6.7945          1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(incubation.analysis[[<span class="dv">2</span>]])</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(incubation.analysis<span class="op">$</span>incRscan_threshold)</code></pre></div>
 <pre><code>##         date first.maxIncrease final.maxIncrease first.maxDrop
 ## 1 2015-05-06              &lt;NA&gt;              &lt;NA&gt;          &lt;NA&gt;
 ## 2 2015-05-07              &lt;NA&gt;             0.312          &lt;NA&gt;
@@ -183,10 +183,20 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 ## 2        -0.562              0.034
 ## 3        -0.499               0.08</code></pre>
 <p>There is no <code>incR_score</code> information for May 6 as no <code>lower.time</code> - <code>upper.time</code> window was available. The second table shows us the threshold used for on and off-bout detection. The absence of data in <code>first.maxIncrease</code> and <code>first.maxDrop</code> informs us that the value set by <code>maxNightVariation</code> was not passed.</p>
-</div>
-<div id="extracting-incubation-metrics" class="section level2">
-<h2>Extracting incubation metrics</h2>
-<p>Once we have produced incubation scores (located in <code>incR_score</code>), we can apply other incR functions to extract incubation information.</p>
+<p>The results of incRscan can be quickly visualised with the <code>incRplot</code> function. In the plot below, on-bout are shown in orange, off-bouts in blue and environmental temperatures appear as a green line.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_plot &lt;-<span class="st"> </span><span class="kw">incRplot</span>(<span class="dt">data =</span> incubation.analysis<span class="op">$</span>incRscan_data,
+                     <span class="dt">time.var =</span> <span class="st">&quot;dec_time&quot;</span>, 
+                     <span class="dt">day.var =</span> <span class="st">&quot;date&quot;</span>, 
+                     <span class="dt">inc.temperature.var =</span> <span class="st">&quot;temperature&quot;</span>, 
+                     <span class="dt">env.temperature.var =</span> <span class="st">&quot;env_temp&quot;</span>,
+                     <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)
+
+<span class="co"># a ggplot plot is created that can be modified by the user</span>
+my_plot <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Temperature&quot;</span>)</code></pre></div>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
+<p><img src="data:image/png;base64,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" /><!-- --> ## Extracting incubation metrics Once we have produced incubation scores (located in <code>incR_score</code>), we can apply other incR functions to extract incubation information.</p>
 <div id="incubation-constancy" class="section level3">
 <h3>Incubation constancy</h3>
 <p>This is defined and calculated as the percentage of daily time spent in the nest.</p>
@@ -204,11 +214,7 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 <pre><code>##         date first_offbout last_onbout
 ## 1 2015-05-07         05:47       20:49
 ## 2 2015-05-08         05:52       13:14</code></pre>
-<p>Note that if temperature data exists for the entire day, <code>first_offbout</code> and <code>last_onbout</code> times correspond to onset and end of activity. Biological interpretation of the times yielded by <code>incRatt</code> is needed - e.g., in the example above, <code>last_onbout</code> for May 8 is not telling us the end of daily activity but rather the last on-bout in an uncompleted day of temperature recordings.</p>
-</div>
-<div id="incubation-temperatures" class="section level3">
-<h3>Incubation temperatures</h3>
-<p>This function offers three options. To calculate temperature averages and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as the temporal window for calculation.</p>
+<p>Note that if temperature data exists for the entire day, <code>first_offbout</code> and <code>last_onbout</code> times correspond to onset and end of activity. Biological interpretation of the times yielded by <code>incRatt</code> is needed - e.g., in the example above, <code>last_onbout</code> for May 8 is not telling us the end of daily activity but rather the last on-bout in an uncompleted day of temperature recordings. ### Incubation temperatures This function offers three options. To calculate temperature average and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as the temporal window for calculation.</p>
 <p><strong>1</strong></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
       <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
@@ -254,7 +260,10 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
                    <span class="dt">dec_time =</span> <span class="st">&quot;dec_time&quot;</span>,
                    <span class="dt">temp =</span> <span class="st">&quot;temperature&quot;</span>)
 
-<span class="co"># bouts per day</span>
+<span class="co"># the results are in two tables</span>
+<span class="kw">names</span>(bouts)</code></pre></div>
+<pre><code>## [1] &quot;total_bouts&quot; &quot;day_bouts&quot;</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bouts per day</span>
 <span class="kw">head</span>(bouts<span class="op">$</span>day_bouts)</code></pre></div>
 <pre><code>##         date number.on.bouts number.off.bouts mean.time.on.bout
 ## 1 2015-05-07              33               32         0.6863636
@@ -272,7 +281,8 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 ## 5 2015-05-07  onbout      8.200     1.15     19.831     33.141
 ## 6 2015-05-07 offbout      9.150     0.20     32.080     27.959</code></pre>
 <hr />
-<p>Please, if you use the package, cite it as: <em>Citation coming soon</em></p>
+<p>Please, if you use the package, cite it as:</p>
+<p>incR: a free new R package to analyse incubation behaviour. Pablo Capilla-Lasheras. bioRxiv 232520; doi: <a href="https://doi.org/10.1101/232520" class="uri">https://doi.org/10.1101/232520</a>.</p>
 </div>
 </div>
 </div>

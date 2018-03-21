@@ -5,10 +5,10 @@ head(incR_rawdata)
 
 ## ----eval = TRUE---------------------------------------------------------
 incR_rawdata_prep <- incRprep(data = incR_rawdata,
-                                    date.name = "DATE",
-                                    date.format= "%d/%m/%Y %H:%M",
-                                    timezone="GMT",
-                                    temperature.name="temperature")
+                              date.name = "DATE",
+                              date.format= "%d/%m/%Y %H:%M",
+                              timezone="GMT",
+                              temperature.name="temperature")
 head(incR_rawdata_prep, 3)
 
 ## ----eval = TRUE---------------------------------------------------------
@@ -31,7 +31,7 @@ incubation.analysis <- incRscan (data=incR_data,
                                    lower.time=22,
                                    upper.time=3,
                                    sensitivity=0.15,
-                                   temp.diff=5,
+                                   temp.diff.threshold =5,
                                    maxNightVariation=2,
                                    env.temp="env_temp")
 
@@ -39,8 +39,19 @@ incubation.analysis <- incRscan (data=incR_data,
 names(incubation.analysis)
 
 # incRscan output
-head(incubation.analysis[[1]])
-head(incubation.analysis[[2]])
+head(incubation.analysis$incRscan_data)
+head(incubation.analysis$incRscan_threshold)
+
+## ------------------------------------------------------------------------
+my_plot <- incRplot(data = incubation.analysis$incRscan_data,
+                     time.var = "dec_time", 
+                     day.var = "date", 
+                     inc.temperature.var = "temperature", 
+                     env.temperature.var = "env_temp",
+                     vector.incubation = "incR_score")
+
+# a ggplot plot is created that can be modified by the user
+my_plot + ggplot2::labs(x = "Time", y = "Temperature")
 
 ## ------------------------------------------------------------------------
 incRatt(data = incubation.analysis[[1]], vector.incubation = "incR_score")
@@ -85,6 +96,9 @@ bouts <- incRbouts(data = incubation.analysis[[1]],
                    sampling.rate = incubation.analysis[[1]]$dec_time[56] - incubation.analysis[[1]]$dec_time[55],   # sampling interval
                    dec_time = "dec_time",
                    temp = "temperature")
+
+# the results are in two tables
+names(bouts)
 
 # bouts per day
 head(bouts$day_bouts)
