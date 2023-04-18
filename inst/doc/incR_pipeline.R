@@ -1,9 +1,9 @@
-## ----eval = TRUE---------------------------------------------------------
+## ----include=FALSE------------------------------------------------------------
 library("incR")
 data("incR_rawdata")  # loading the data
 head(incR_rawdata)
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 incR_rawdata_prep <- incRprep(data = incR_rawdata,
                               date.name = "DATE",
                               date.format= "%d/%m/%Y %H:%M",
@@ -11,7 +11,7 @@ incR_rawdata_prep <- incRprep(data = incR_rawdata,
                               temperature.name="temperature")
 head(incR_rawdata_prep, 3)
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 data(incR_envdata)  # environmental data
 head (incR_envdata)
 
@@ -25,7 +25,7 @@ incR_data <- incRenv (data.nest = incR_rawdata_prep,     # data set prepared by 
 
 head (incR_data, 3)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 incubation.analysis <- incRscan (data=incR_data, 
                                    temp.name="temperature",
                                    lower.time=22,
@@ -35,14 +35,14 @@ incubation.analysis <- incRscan (data=incR_data,
                                    maxNightVariation=2,
                                    env.temp="env_temp")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 names(incubation.analysis)
 
 # incRscan output
 head(incubation.analysis$incRscan_data)
 head(incubation.analysis$incRscan_threshold)
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 my_plot <- incRplot(data = incubation.analysis$incRscan_data,
                      time.var = "dec_time", 
                      day.var = "date", 
@@ -53,15 +53,15 @@ my_plot <- incRplot(data = incubation.analysis$incRscan_data,
 # a ggplot plot is created that can be modified by the user
 my_plot + ggplot2::labs(x = "Time", y = "Temperature")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 incRatt(data = incubation.analysis[[1]], vector.incubation = "incR_score")
 
-## ------------------------------------------------------------------------
+## -----------------------------------------------------------------------------
 incRact(data = incubation.analysis[[1]],
              time_column = "time",
              vector.incubation = "incR_score")
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 incRt(data = incubation.analysis[[1]], 
       temp.name = "temperature", 
       limits = c(5,21),                 # time window
@@ -70,7 +70,7 @@ incRt(data = incubation.analysis[[1]],
       civil.twilight = FALSE, 
       time.zone = NULL)              
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 incRt(data = incubation.analysis[[1]], 
       temp.name = "temperature", 
       limits = NULL,                 
@@ -81,7 +81,7 @@ incRt(data = incubation.analysis[[1]],
       time_column= "time",
       vector.incubation="incR_score")              
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 incRt(data = incubation.analysis[[1]], 
       temp.name = "temperature", 
       limits = NULL,                 
@@ -90,7 +90,7 @@ incRt(data = incubation.analysis[[1]],
       civil.twilight = TRUE, 
       time.zone = "GMT")
 
-## ----eval = TRUE---------------------------------------------------------
+## ----eval = TRUE--------------------------------------------------------------
 bouts <- incRbouts(data = incubation.analysis[[1]], 
                    vector.incubation = "incR_score",
                    sampling.rate = incubation.analysis[[1]]$dec_time[56] - incubation.analysis[[1]]$dec_time[55],   # sampling interval

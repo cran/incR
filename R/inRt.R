@@ -20,14 +20,14 @@
 #' @param coor coordinates for the location where temperature was recorded,
 #' formatted as decimal degrees N/S, decimal degrees E/W.
 #' When 'civil.twilight' is TRUE, 'coor' allows the user to define sunrise and sunset times
-#' based on the \code{\link{crepuscule}} function (in \code{maptools} package). 
+#' based on the \code{\link{getSunlightTimes}} function (in \code{suncalc} package). 
 #' @param civil.twilight TRUE or FALSE. Set as TRUE when time periods for calculation
-#' are to be defined by civil twilight times - calculated using \code{\link{crepuscule}}. 
+#' are to be defined by civil twilight times - calculated using \code{\link{getSunlightTimes}}. 
 #' If 'civil.twilight = TRUE', 'coor' and 'time.zone' need to be specified.
 #' @param activity.times TRUE or FALSE. Set as TRUE when time periods for calculation
 #' are defined by \code{\link{incRact}}. Data must contain a column named 
 #' 'incR_score' for the use of \code{\link{incRact}}.
-#' @param time.zone time zone for \code{\link{crepuscule}} dawn and dusk calculations.
+#' @param time.zone time zone for \code{\link{getSunlightTimes}} dawn and dusk calculations.
 #' @param ... use parameters in \code{\link{incRact}} if \emph{activity.times} = TRUE.
 #' @return a data frame containing temperature means and variance for the defined time 
 #' window.
@@ -65,7 +65,7 @@
 #'         activity.times=FALSE,
 #'         time.zone="GMT")
 #' @seealso \code{\link{incRprep}} \code{\link{incRscan}} \code{\link{incRact}}
-#' \code{\link{crepuscule}}
+#' \code{\link{getSunlightTimes}}
 #' @export 
 
 incRt <- function (data, 
@@ -107,16 +107,32 @@ incRt <- function (data,
                                ...)
     act.times$first_offbout <- do.call(args = base::lapply(strsplit(act.times$first_offbout, " "), 
                                                            FUN = function(x) {
-                                                             time <- lubridate::hm(x)
-                                                             lubridate::hour(time) + lubridate::minute(time)/60
+                                                             
+                                                             if(is.na(x)){
+                                                               time <- NA 
+                                                               return(NA)
+                                                             } else {
+                                                             time <- lubridate::hms(x)
+                                                             lubridate::hour(time) + 
+                                                               lubridate::minute(time)/60 + 
+                                                               lubridate::second(time)/3600
+                                                             }
                                                            }),
                                        what = "rbind")
     
     
     act.times$last_onbout <- do.call(args = base::lapply(strsplit(act.times$last_onbout, " "), 
                                                            FUN = function(x) {
-                                                             time <- lubridate::hm(x)
-                                                             lubridate::hour(time) + lubridate::minute(time)/60
+                                                             
+                                                             if(is.na(x)){
+                                                               time <- NA 
+                                                               return(NA)
+                                                             } else {
+                                                             time <- lubridate::hms(x)
+                                                             lubridate::hour(time) + 
+                                                               lubridate::minute(time)/60 +
+                                                               lubridate::second(time)/3600
+                                                             }
                                                            }),
                                        what = "rbind")
   
@@ -127,16 +143,26 @@ incRt <- function (data,
         stop ("Time zone and/or coor not specified; please, do it by passing the argument
               to the incRt function")
       }
-      # calculates civil twilinght times
-      dawn <- stats::na.omit(maptools::crepuscule(crds=base::matrix(c(coor[1], coor[2]), nrow=1), 
-                                                  dateTime=base::as.POSIXct (base::as.character(base::unique (data$date)), 
-                                                                             tz=time.zone),
-                                                  solarDep=6, direction="dawn", POSIXct.out=TRUE))
+      # calculates civil twilight times
+      
+    
+      
+      
+      
+      dawn <- stats::na.omit(suncalc::getSunlightTimes(date = base::as.Date(base::as.POSIXct(base::as.character(base::unique(data$date)), tz=time.zone)), 
+                                                        lat = coor[1],
+                                                        lon = coor[2],
+                                                        keep = c("dawn"), 
+                                                        tz = time.zone))
       dawn$day_frac <- NULL
-      dawn$dusk <-  stats::na.omit(maptools::crepuscule(base::matrix(c(coor[1], coor[2]), nrow=1), 
-                                                        base::as.POSIXct (base::as.character(base::unique (data$date)), 
-                                                                          tz=time.zone),
-                                                        solarDep=6, direction="dusk", POSIXct.out=TRUE))[,2]
+      dawn$dusk <-  stats::na.omit( suncalc::getSunlightTimes(date = base::as.Date(base::as.POSIXct(base::as.character(base::unique(data$date)), tz=time.zone)), 
+                                                              lat = coor[1],
+                                                              lon = coor[2],
+                                                              keep = c("dusk"), 
+                                                              tz = time.zone))[,4]
+      dawn$date <- NULL
+      dawn$lat <- NULL
+      dawn$lon <- NULL
       names(dawn) <- c("dawn.time", "dusk.time")
       
       

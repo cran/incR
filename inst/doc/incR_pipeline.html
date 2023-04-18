@@ -1,65 +1,336 @@
 <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
 
 <head>
 
 <meta charset="utf-8" />
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 
 <meta name="author" content="Pablo Capilla-Lasheras" />
 
-<meta name="date" content="2018-03-17" />
+<meta name="date" content="2020-06-21" />
 
 <title>incR Working Pipeline</title>
 
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
 
-
-<style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
 </style>
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
 
 </head>
 
@@ -69,52 +340,61 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <h1 class="title toc-ignore">incR Working Pipeline</h1>
-<h4 class="author"><em>Pablo Capilla-Lasheras</em></h4>
-<h4 class="date"><em>2018-03-17</em></h4>
+<h4 class="author">Pablo Capilla-Lasheras</h4>
+<h4 class="date">2020-06-21</h4>
 
 
 
-<p><em>This vignette was created using <code>incR</code> version 1.1.0 and R version 3.4.4 (2018-03-15).</em></p>
+<p><em>This vignette was created using <code>incR</code> version 2.1.0
+and R version 4.2.2 (2022-10-31 ucrt).</em></p>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>This document serves as an example for a suggested <code>incR</code> working pipeline. I have tested the accuracy of the method and the results of such validation can be found <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">here</a>. Throughout this vignette, I follow the examples found in the documentation for <code>incR</code> and use data distributed with the package.</p>
+<p>This document serves as an example for a suggested <code>incR</code>
+working pipeline. I have tested the accuracy of the method and the
+results of such validation can be found <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jav.01710">here</a>.
+Throughout this vignette, I follow the examples found in the
+documentation for <code>incR</code> and use data distributed with the
+package.</p>
 </div>
 <div id="incr-working-pipeline" class="section level1">
 <h1><code>incR</code> working pipeline</h1>
 <div id="data-preparation-incrprep" class="section level2">
 <h2>Data preparation: <code>incRprep</code></h2>
-<p>The data table contains raw nest temperatures coming from an iButton device (Maxim Integrated Products) and has two columns, date/time and temperature values in Celsius degrees. Several files, from the same nest where combined to create a completed nest temperature file.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(<span class="st">&quot;incR&quot;</span>)
-<span class="kw">data</span>(<span class="st">&quot;incR_rawdata&quot;</span>)  <span class="co"># loading the data</span>
-<span class="kw">head</span>(incR_rawdata)</code></pre></div>
-<pre><code>##               DATE temperature
-## 1 06/05/2015 21:42      32.018
-## 2 06/05/2015 21:44      32.018
-## 3 06/05/2015 21:47      32.143
-## 4 06/05/2015 21:49      32.205
-## 5 06/05/2015 21:52      32.205
-## 6 06/05/2015 21:54      32.143</code></pre>
-<p><code>incRprep</code> takes these data and simply adds new columns that are going to be useful for other components of the pipeline. Please, do not use <em>date</em> as the name of the date/time column. <code>incRprep</code> will create a new column named <em>date</em> and will, therefore, produce an error if such a name is already found in the raw data table. See ?incRprep to find information about the new columns added by this function.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incR_rawdata_prep &lt;-<span class="st"> </span><span class="kw">incRprep</span>(<span class="dt">data =</span> incR_rawdata,
-                              <span class="dt">date.name =</span> <span class="st">&quot;DATE&quot;</span>,
-                              <span class="dt">date.format=</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>,
-                              <span class="dt">timezone=</span><span class="st">&quot;GMT&quot;</span>,
-                              <span class="dt">temperature.name=</span><span class="st">&quot;temperature&quot;</span>)
-<span class="kw">head</span>(incR_rawdata_prep, <span class="dv">3</span>)</code></pre></div>
-<pre><code>##               DATE temperature index  time hour minute       date dec_time
-## 1 06/05/2015 21:42      32.018     1 21:42   21     42 2015-05-06 21.70000
-## 2 06/05/2015 21:44      32.018     2 21:44   21     44 2015-05-06 21.73333
-## 3 06/05/2015 21:47      32.143     3 21:47   21     47 2015-05-06 21.78333
-##   temp1
-## 1    NA
-## 2 0.000
-## 3 0.125</code></pre>
+<p>The data table contains raw nest temperatures coming from an iButton
+device (Maxim Integrated Products) and has two columns, date/time and
+temperature values in Celsius degrees. Several files, from the same nest
+where combined to create a completed nest temperature file.</p>
+<p><code>incRprep</code> takes these data and simply adds new columns
+that are going to be useful for other components of the pipeline.
+Please, do not use <em>date</em> as the name of the date/time column.
+<code>incRprep</code> will create a new column named <em>date</em> and
+will, therefore, produce an error if such a name is already found in the
+raw data table. See ?incRprep to find information about the new columns
+added by this function.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>incR_rawdata_prep <span class="ot">&lt;-</span> <span class="fu">incRprep</span>(<span class="at">data =</span> incR_rawdata,</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>                              <span class="at">date.name =</span> <span class="st">&quot;DATE&quot;</span>,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>                              <span class="at">date.format=</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>                              <span class="at">timezone=</span><span class="st">&quot;GMT&quot;</span>,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>                              <span class="at">temperature.name=</span><span class="st">&quot;temperature&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(incR_rawdata_prep, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>##               DATE temperature index     time hour minute second       date
+## 1 06/05/2015 21:42      32.018     1 21:42:00   21     42      0 2015-05-06
+## 2 06/05/2015 21:44      32.018     2 21:44:00   21     44      0 2015-05-06
+## 3 06/05/2015 21:47      32.143     3 21:47:00   21     47      0 2015-05-06
+##   dec_time temp1
+## 1 21.70000    NA
+## 2 21.73333 0.000
+## 3 21.78333 0.125</code></pre>
 </div>
 <div id="combining-nest-and-environmental-temperatures-increnv" class="section level2">
-<h2>Combining nest and environmental temperatures: <code>incRenv</code></h2>
-<p>Following the example with the data generated by <code>incRprep</code>, we can apply <code>incRenv</code> to match environmental temperatures. The current version of <code>incRenv</code> averages environmental temperatures per hour.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">data</span>(incR_envdata)  <span class="co"># environmental data</span>
-<span class="kw">head</span> (incR_envdata)</code></pre></div>
+<h2>Combining nest and environmental temperatures:
+<code>incRenv</code></h2>
+<p>Following the example with the data generated by
+<code>incRprep</code>, we can apply <code>incRenv</code> to match
+environmental temperatures. The current version of <code>incRenv</code>
+averages environmental temperatures per hour.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(incR_envdata)  <span class="co"># environmental data</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> (incR_envdata)</span></code></pre></div>
 <pre><code>##               DATE env_temperature
 ## 1 06/05/2015 00:02           6.415
 ## 2 06/05/2015 00:03           6.244
@@ -122,50 +402,73 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 ## 4 06/05/2015 00:08           6.415
 ## 5 06/05/2015 00:13           6.477
 ## 6 06/05/2015 00:14           6.244</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># then use incRenv to merge environmental data</span>
-incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span class="dt">data.nest =</span> incR_rawdata_prep,     <span class="co"># data set prepared by incRprep</span>
-                      <span class="dt">data.env =</span> incR_envdata, 
-                      <span class="dt">env.temperature.name =</span> <span class="st">&quot;env_temperature&quot;</span>, 
-                      <span class="dt">env.date.name =</span> <span class="st">&quot;DATE&quot;</span>, 
-                      <span class="dt">env.date.format =</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>, 
-                      <span class="dt">env.timezone =</span> <span class="st">&quot;GMT&quot;</span>)
-
-<span class="kw">head</span> (incR_data, <span class="dv">3</span>)</code></pre></div>
-<pre><code>##               DATE temperature index  time hour minute       date dec_time
-## 1 06/05/2015 21:42      32.018     1 21:42   21     42 2015-05-06 21.70000
-## 2 06/05/2015 21:44      32.018     2 21:44   21     44 2015-05-06 21.73333
-## 3 06/05/2015 21:47      32.143     3 21:47   21     47 2015-05-06 21.78333
-##   temp1 env_temp
-## 1    NA 8.759136
-## 2 0.000 8.759136
-## 3 0.125 8.759136</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># then use incRenv to merge environmental data</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>incR_data <span class="ot">&lt;-</span> <span class="fu">incRenv</span> (<span class="at">data.nest =</span> incR_rawdata_prep,     <span class="co"># data set prepared by incRprep</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                      <span class="at">data.env =</span> incR_envdata, </span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>                      <span class="at">env.temperature.name =</span> <span class="st">&quot;env_temperature&quot;</span>, </span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>                      <span class="at">env.date.name =</span> <span class="st">&quot;DATE&quot;</span>, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>                      <span class="at">env.date.format =</span> <span class="st">&quot;%d/%m/%Y %H:%M&quot;</span>, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                      <span class="at">env.timezone =</span> <span class="st">&quot;GMT&quot;</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span> (incR_data, <span class="dv">3</span>)</span></code></pre></div>
+<pre><code>##         date hour             DATE temperature index     time minute second
+## 1 2015-05-06   21 06/05/2015 21:42      32.018     1 21:42:00     42      0
+## 2 2015-05-06   21 06/05/2015 21:44      32.018     2 21:44:00     44      0
+## 3 2015-05-06   21 06/05/2015 21:47      32.143     3 21:47:00     47      0
+##   dec_time temp1 env_temp
+## 1 21.70000    NA 8.759136
+## 2 21.73333 0.000 8.759136
+## 3 21.78333 0.125 8.759136</code></pre>
 </div>
 <div id="automatic-incubation-scoring-incrscan" class="section level2">
 <h2>Automatic incubation scoring: <code>incRscan</code></h2>
-<p>After using <code>incRprep</code> and <code>incRenv</code>, the data table is ready for <code>incRscan</code>. This function applies an automatic algorithm that scores incubation. By looking at temperature variation when the incubating individual is assumed to be incubating, <code>incRscan</code> determines presence or absence of the incubating individual (incubation score) for every data point (i.e. time point) in the data set. For details about the algorithm follow <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">this link</a>.</p>
-<p>Several parameters in <code>incRscan</code> need to be chosen by the user. For such task, it is highly recommended to have an external source of data validation and calibration, for example, video-recordings of the nest or pit-tagged individuals, so that the scores calculated by <code>incRscan</code> can be assessed. By comparing the performance of <code>incRscan</code> over several parameters values, one can decide on the best combination of parameters. This approach may also serve as a quality-checking step as <code>incRscan</code> performance is thought to drop when data quality decreases. For this example, we use parameter values known to work well for this data set (see this <a href="https://www.biorxiv.org/content/early/2017/12/12/232520">LINK</a> for more information).</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">incubation.analysis &lt;-<span class="st"> </span><span class="kw">incRscan</span> (<span class="dt">data=</span>incR_data, 
-                                   <span class="dt">temp.name=</span><span class="st">&quot;temperature&quot;</span>,
-                                   <span class="dt">lower.time=</span><span class="dv">22</span>,
-                                   <span class="dt">upper.time=</span><span class="dv">3</span>,
-                                   <span class="dt">sensitivity=</span><span class="fl">0.15</span>,
-                                   <span class="dt">temp.diff.threshold =</span><span class="dv">5</span>,
-                                   <span class="dt">maxNightVariation=</span><span class="dv">2</span>,
-                                   <span class="dt">env.temp=</span><span class="st">&quot;env_temp&quot;</span>)</code></pre></div>
+<p>After using <code>incRprep</code> and <code>incRenv</code>, the data
+table is ready for <code>incRscan</code>. This function applies an
+automatic algorithm that scores incubation. By looking at temperature
+variation when the incubating individual is assumed to be incubating,
+<code>incRscan</code> determines presence or absence of the incubating
+individual (incubation score) for every data point (i.e. time point) in
+the data set. For details about the algorithm follow <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jav.01710">this
+link</a>.</p>
+<p>Several parameters in <code>incRscan</code> need to be chosen by the
+user. For such task, it is highly recommended to have an external source
+of data validation and calibration, for example, video-recordings of the
+nest or pit-tagged individuals, so that the scores calculated by
+<code>incRscan</code> can be assessed. By comparing the performance of
+<code>incRscan</code> over several parameters values, one can decide on
+the best combination of parameters. This approach may also serve as a
+quality-checking step as <code>incRscan</code> performance is thought to
+drop when data quality decreases. For this example, we use parameter
+values known to work well for this data set (see this <a href="https://onlinelibrary.wiley.com/doi/full/10.1111/jav.01710">LINK</a>
+for more information).</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>incubation.analysis <span class="ot">&lt;-</span> <span class="fu">incRscan</span> (<span class="at">data=</span>incR_data, </span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">temp.name=</span><span class="st">&quot;temperature&quot;</span>,</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">lower.time=</span><span class="dv">22</span>,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">upper.time=</span><span class="dv">3</span>,</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">sensitivity=</span><span class="fl">0.15</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">temp.diff.threshold =</span><span class="dv">5</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">maxNightVariation=</span><span class="dv">2</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>                                   <span class="at">env.temp=</span><span class="st">&quot;env_temp&quot;</span>)</span></code></pre></div>
 <pre><code>## [1] &quot;No night reference period for  2015-05-06  - day skipped&quot;</code></pre>
-<p><code>incRscan</code> needs to have temperature data between <code>lower.time</code> and <code>upper.time</code> to score incubation in the following morning, when this is not the case, a printed message will be produced - as seen above.</p>
-<p>The new object <code>incubation.analysis</code> is formed by two data tables (see below), representing the original data set with the new <code>incR_score</code> column added and a table with temperature thresholds used for incubation scoring.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">names</span>(incubation.analysis)</code></pre></div>
+<p><code>incRscan</code> needs to have temperature data between
+<code>lower.time</code> and <code>upper.time</code> to score incubation
+in the following morning, when this is not the case, a printed message
+will be produced - as seen above.</p>
+<p>The new object <code>incubation.analysis</code> is formed by two data
+tables (see below), representing the original data set with the new
+<code>incR_score</code> column added and a table with temperature
+thresholds used for incubation scoring.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(incubation.analysis)</span></code></pre></div>
 <pre><code>## [1] &quot;incRscan_data&quot;      &quot;incRscan_threshold&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># incRscan output</span>
-<span class="kw">head</span>(incubation.analysis<span class="op">$</span>incRscan_data)</code></pre></div>
-<pre><code>##                DATE temperature index  time hour minute       date
-## 1              &lt;NA&gt;          NA    NA  &lt;NA&gt;   NA     NA       &lt;NA&gt;
-## 57 07/05/2015 00:02      31.456    57 00:02    0      2 2015-05-07
-## 58 07/05/2015 00:04      31.581    58 00:04    0      4 2015-05-07
-## 59 07/05/2015 00:07      31.706    59 00:07    0      7 2015-05-07
-## 60 07/05/2015 00:09      31.893    60 00:09    0      9 2015-05-07
-## 61 07/05/2015 00:12      31.830    61 00:12    0     12 2015-05-07
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># incRscan output</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(incubation.analysis<span class="sc">$</span>incRscan_data)</span></code></pre></div>
+<pre><code>##          date hour             DATE temperature index     time minute second
+## 1        &lt;NA&gt;   NA             &lt;NA&gt;          NA    NA     &lt;NA&gt;     NA     NA
+## 57 2015-05-07    0 07/05/2015 00:02      31.456    57 00:02:00      2      0
+## 58 2015-05-07    0 07/05/2015 00:04      31.581    58 00:04:00      4      0
+## 59 2015-05-07    0 07/05/2015 00:07      31.706    59 00:07:00      7      0
+## 60 2015-05-07    0 07/05/2015 00:09      31.893    60 00:09:00      9      0
+## 61 2015-05-07    0 07/05/2015 00:12      31.830    61 00:12:00     12      0
 ##      dec_time  temp1 env_temp incR_score
 ## 1          NA     NA       NA         NA
 ## 57 0.03333333 -0.062   6.7945          1
@@ -173,106 +476,134 @@ incR_data &lt;-<span class="st"> </span><span class="kw">incRenv</span> (<span c
 ## 59 0.11666667  0.125   6.7945          1
 ## 60 0.15000000  0.187   6.7945          1
 ## 61 0.20000000 -0.063   6.7945          1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(incubation.analysis<span class="op">$</span>incRscan_threshold)</code></pre></div>
-<pre><code>##         date first.maxIncrease final.maxIncrease first.maxDrop
-## 1 2015-05-06              &lt;NA&gt;              &lt;NA&gt;          &lt;NA&gt;
-## 2 2015-05-07              &lt;NA&gt;             0.312          &lt;NA&gt;
-## 3 2015-05-08              &lt;NA&gt;             0.749          &lt;NA&gt;
-##   final.maxDrop night_day_varRatio
-## 1          &lt;NA&gt;               &lt;NA&gt;
-## 2        -0.562              0.034
-## 3        -0.499               0.08</code></pre>
-<p>There is no <code>incR_score</code> information for May 6 as no <code>lower.time</code> - <code>upper.time</code> window was available. The second table shows us the threshold used for on and off-bout detection. The absence of data in <code>first.maxIncrease</code> and <code>first.maxDrop</code> informs us that the value set by <code>maxNightVariation</code> was not passed.</p>
-<p>The results of incRscan can be quickly visualised with the <code>incRplot</code> function. In the plot below, on-bout are shown in orange, off-bouts in blue and environmental temperatures appear as a green line.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">my_plot &lt;-<span class="st"> </span><span class="kw">incRplot</span>(<span class="dt">data =</span> incubation.analysis<span class="op">$</span>incRscan_data,
-                     <span class="dt">time.var =</span> <span class="st">&quot;dec_time&quot;</span>, 
-                     <span class="dt">day.var =</span> <span class="st">&quot;date&quot;</span>, 
-                     <span class="dt">inc.temperature.var =</span> <span class="st">&quot;temperature&quot;</span>, 
-                     <span class="dt">env.temperature.var =</span> <span class="st">&quot;env_temp&quot;</span>,
-                     <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)
-
-<span class="co"># a ggplot plot is created that can be modified by the user</span>
-my_plot <span class="op">+</span><span class="st"> </span>ggplot2<span class="op">::</span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Temperature&quot;</span>)</code></pre></div>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_point).</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_path).</code></pre>
-<p><img src="data:image/png;base64,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" /><!-- --> ## Extracting incubation metrics Once we have produced incubation scores (located in <code>incR_score</code>), we can apply other incR functions to extract incubation information.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(incubation.analysis<span class="sc">$</span>incRscan_threshold)</span></code></pre></div>
+<pre><code>##         date first.maxIncrease final.maxIncrease first.maxDrop final.maxDrop
+## 1 2015-05-06              &lt;NA&gt;              &lt;NA&gt;          &lt;NA&gt;          &lt;NA&gt;
+## 2 2015-05-07              &lt;NA&gt;             0.312          &lt;NA&gt;        -0.562
+## 3 2015-05-08              &lt;NA&gt;             0.749          &lt;NA&gt;        -0.499
+##   night_day_varRatio
+## 1               &lt;NA&gt;
+## 2              0.034
+## 3               0.08</code></pre>
+<p>There is no <code>incR_score</code> information for May 6 as no
+<code>lower.time</code> - <code>upper.time</code> window was available.
+The second table shows us the threshold used for on and off-bout
+detection. The absence of data in <code>first.maxIncrease</code> and
+<code>first.maxDrop</code> informs us that the value set by
+<code>maxNightVariation</code> was not passed.</p>
+<p>The results of incRscan can be quickly visualised with the
+<code>incRplot</code> function. In the plot below, on-bout are shown in
+orange, off-bouts in blue and environmental temperatures appear as a
+green line.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>my_plot <span class="ot">&lt;-</span> <span class="fu">incRplot</span>(<span class="at">data =</span> incubation.analysis<span class="sc">$</span>incRscan_data,</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>                     <span class="at">time.var =</span> <span class="st">&quot;dec_time&quot;</span>, </span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>                     <span class="at">day.var =</span> <span class="st">&quot;date&quot;</span>, </span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">inc.temperature.var =</span> <span class="st">&quot;temperature&quot;</span>, </span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>                     <span class="at">env.temperature.var =</span> <span class="st">&quot;env_temp&quot;</span>,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>                     <span class="at">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="co"># a ggplot plot is created that can be modified by the user</span></span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>my_plot <span class="sc">+</span> ggplot2<span class="sc">::</span><span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Time&quot;</span>, <span class="at">y =</span> <span class="st">&quot;Temperature&quot;</span>)</span></code></pre></div>
+<pre><code>## Warning: Removed 1 row containing missing values (`geom_line()`).</code></pre>
+<pre><code>## Warning: Removed 1 rows containing missing values (`geom_point()`).</code></pre>
+<pre><code>## Warning: Removed 1 row containing missing values (`geom_line()`).</code></pre>
+<p><img src="data:image/png;base64,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" /><!-- -->
+## Extracting incubation metrics Once we have produced incubation scores
+(located in <code>incR_score</code>), we can apply other incR functions
+to extract incubation information.</p>
 <div id="incubation-constancy" class="section level3">
 <h3>Incubation constancy</h3>
-<p>This is defined and calculated as the percentage of daily time spent in the nest.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRatt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</code></pre></div>
+<p>This is defined and calculated as the percentage of daily time spent
+in the nest.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">incRatt</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]], <span class="at">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</span></code></pre></div>
 <pre><code>##         date percentage_in
 ## 1 2015-05-07      78.64583
 ## 2 2015-05-08      68.63354</code></pre>
 </div>
 <div id="incubation-activity" class="section level3">
 <h3>Incubation activity</h3>
-<p><code>incRact</code> calculates onset and end of activity: firs off-bout in the morning and last on-bout in the evening.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRact</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]],
-             <span class="dt">time_column =</span> <span class="st">&quot;time&quot;</span>,
-             <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</code></pre></div>
+<p><code>incRact</code> calculates onset and end of activity: firs
+off-bout in the morning and last on-bout in the evening.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">incRact</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]],</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">time_column =</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>)</span></code></pre></div>
 <pre><code>##         date first_offbout last_onbout
-## 1 2015-05-07         05:47       20:49
-## 2 2015-05-08         05:52       13:14</code></pre>
-<p>Note that if temperature data exists for the entire day, <code>first_offbout</code> and <code>last_onbout</code> times correspond to onset and end of activity. Biological interpretation of the times yielded by <code>incRatt</code> is needed - e.g., in the example above, <code>last_onbout</code> for May 8 is not telling us the end of daily activity but rather the last on-bout in an uncompleted day of temperature recordings. ### Incubation temperatures This function offers three options. To calculate temperature average and variance between <strong>1)</strong> two user-defined time windows, <strong>2)</strong> first off-bout and last on-bout as calculated by <code>incRact</code> and <strong>3)</strong> calculate twilight times using <code>crepuscule{maptools}</code> and apply twilight times as the temporal window for calculation.</p>
+## 1 2015-05-07      05:47:00    20:49:00
+## 2 2015-05-08      05:52:00    13:14:00</code></pre>
+<p>Note that if temperature data exists for the entire day,
+<code>first_offbout</code> and <code>last_onbout</code> times correspond
+to onset and end of activity. Biological interpretation of the times
+yielded by <code>incRatt</code> is needed - e.g., in the example above,
+<code>last_onbout</code> for May 8 is not telling us the end of daily
+activity but rather the last on-bout in an uncompleted day of
+temperature recordings. ### Incubation temperatures This function offers
+three options. To calculate temperature average and variance between
+<strong>1)</strong> two user-defined time windows, <strong>2)</strong>
+first off-bout and last on-bout as calculated by <code>incRact</code>
+and <strong>3)</strong> calculate twilight times using
+<code>crepuscule{maptools}</code> and apply twilight times as the
+temporal window for calculation.</p>
 <p><strong>1</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
-      <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
-      <span class="dt">limits =</span> <span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">21</span>),                 <span class="co"># time window</span>
-      <span class="dt">coor =</span> <span class="ot">NULL</span>, 
-      <span class="dt">activity.times =</span> <span class="ot">FALSE</span>, 
-      <span class="dt">civil.twilight =</span> <span class="ot">FALSE</span>, 
-      <span class="dt">time.zone =</span> <span class="ot">NULL</span>)              </code></pre></div>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">incRt</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]], </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, </span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">5</span>,<span class="dv">21</span>),                 <span class="co"># time window</span></span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">coor =</span> <span class="cn">NULL</span>, </span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">activity.times =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">civil.twilight =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">time.zone =</span> <span class="cn">NULL</span>)              </span></code></pre></div>
 <pre><code>##         date day.mean   day.var night.mean night.var
 ## 1 2015-05-07 31.06143  30.03051   33.61665 0.4397057
 ## 2 2015-05-08 22.50848 168.61488         NA        NA</code></pre>
 <p><strong>2</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
-      <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
-      <span class="dt">limits =</span> <span class="ot">NULL</span>,                 
-      <span class="dt">coor =</span> <span class="ot">NULL</span>, 
-      <span class="dt">activity.times =</span> <span class="ot">TRUE</span>,          <span class="co"># incRact is called to define time window</span>
-      <span class="dt">civil.twilight =</span> <span class="ot">FALSE</span>, 
-      <span class="dt">time.zone =</span> <span class="st">&quot;GMT&quot;</span>,
-      <span class="dt">time_column=</span> <span class="st">&quot;time&quot;</span>,
-      <span class="dt">vector.incubation=</span><span class="st">&quot;incR_score&quot;</span>)              </code></pre></div>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">incRt</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]], </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, </span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">limits =</span> <span class="cn">NULL</span>,                 </span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">coor =</span> <span class="cn">NULL</span>, </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">activity.times =</span> <span class="cn">TRUE</span>,          <span class="co"># incRact is called to define time window</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">civil.twilight =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">time.zone =</span> <span class="st">&quot;GMT&quot;</span>,</span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">time_column=</span> <span class="st">&quot;time&quot;</span>,</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">vector.incubation=</span><span class="st">&quot;incR_score&quot;</span>)              </span></code></pre></div>
 <pre><code>##         date day.mean   day.var night.mean night.var
 ## 1 2015-05-07 30.97323  31.89103   33.69237 0.4758604
 ## 2 2015-05-08 20.73246 168.97885         NA        NA</code></pre>
 <p><strong>3</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">incRt</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
-      <span class="dt">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, 
-      <span class="dt">limits =</span> <span class="ot">NULL</span>,                 
-      <span class="dt">coor =</span> <span class="kw">c</span>(<span class="fl">39.5</span>, <span class="fl">40.5</span>),          <span class="co"># choose your coordinates</span>
-      <span class="dt">activity.times =</span> <span class="ot">FALSE</span>, 
-      <span class="dt">civil.twilight =</span> <span class="ot">TRUE</span>, 
-      <span class="dt">time.zone =</span> <span class="st">&quot;GMT&quot;</span>)</code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">incRt</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]], </span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>      <span class="at">temp.name =</span> <span class="st">&quot;temperature&quot;</span>, </span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>      <span class="at">limits =</span> <span class="cn">NULL</span>,                 </span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>      <span class="at">coor =</span> <span class="fu">c</span>(<span class="fl">39.5</span>, <span class="fl">40.5</span>),          <span class="co"># choose your coordinates</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">activity.times =</span> <span class="cn">FALSE</span>, </span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">civil.twilight =</span> <span class="cn">TRUE</span>, </span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">time.zone =</span> <span class="st">&quot;GMT&quot;</span>)</span></code></pre></div>
 <pre><code>##         date day.mean   day.var night.mean night.var
-## 1 2015-05-07 30.63784  29.76609   33.34038  1.265154
+## 1 2015-05-07 30.60936  29.91397   33.35018  1.264417
 ## 2 2015-05-08 25.76023 148.19003         NA        NA</code></pre>
 </div>
 <div id="calculation-of-on-and-off-bouts" class="section level3">
 <h3>Calculation of on and off-bouts</h3>
-<p><code>incRbout</code> calculates i) the number of on and off-bouts per day along with their average duration and ii) the starting time, duration, starting temperature and final temperature for every on and off-bout detected by <code>incRscan</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">bouts &lt;-<span class="st"> </span><span class="kw">incRbouts</span>(<span class="dt">data =</span> incubation.analysis[[<span class="dv">1</span>]], 
-                   <span class="dt">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>,
-                   <span class="dt">sampling.rate =</span> incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">56</span>] <span class="op">-</span><span class="st"> </span>incubation.analysis[[<span class="dv">1</span>]]<span class="op">$</span>dec_time[<span class="dv">55</span>],   <span class="co"># sampling interval</span>
-                   <span class="dt">dec_time =</span> <span class="st">&quot;dec_time&quot;</span>,
-                   <span class="dt">temp =</span> <span class="st">&quot;temperature&quot;</span>)
-
-<span class="co"># the results are in two tables</span>
-<span class="kw">names</span>(bouts)</code></pre></div>
+<p><code>incRbout</code> calculates i) the number of on and off-bouts
+per day along with their average duration and ii) the starting time,
+duration, starting temperature and final temperature for every on and
+off-bout detected by <code>incRscan</code>.</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a>bouts <span class="ot">&lt;-</span> <span class="fu">incRbouts</span>(<span class="at">data =</span> incubation.analysis[[<span class="dv">1</span>]], </span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>                   <span class="at">vector.incubation =</span> <span class="st">&quot;incR_score&quot;</span>,</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a>                   <span class="at">sampling.rate =</span> incubation.analysis[[<span class="dv">1</span>]]<span class="sc">$</span>dec_time[<span class="dv">56</span>] <span class="sc">-</span> incubation.analysis[[<span class="dv">1</span>]]<span class="sc">$</span>dec_time[<span class="dv">55</span>],   <span class="co"># sampling interval</span></span>
+<span id="cb29-4"><a href="#cb29-4" aria-hidden="true" tabindex="-1"></a>                   <span class="at">dec_time =</span> <span class="st">&quot;dec_time&quot;</span>,</span>
+<span id="cb29-5"><a href="#cb29-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">temp =</span> <span class="st">&quot;temperature&quot;</span>)</span>
+<span id="cb29-6"><a href="#cb29-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-7"><a href="#cb29-7" aria-hidden="true" tabindex="-1"></a><span class="co"># the results are in two tables</span></span>
+<span id="cb29-8"><a href="#cb29-8" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(bouts)</span></code></pre></div>
 <pre><code>## [1] &quot;total_bouts&quot; &quot;day_bouts&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bouts per day</span>
-<span class="kw">head</span>(bouts<span class="op">$</span>day_bouts)</code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bouts per day</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bouts<span class="sc">$</span>day_bouts)</span></code></pre></div>
 <pre><code>##         date number.on.bouts number.off.bouts mean.time.on.bout
 ## 1 2015-05-07              33               32         0.6863636
 ## 2 2015-05-08               8                7         1.3812500
 ##   mean.time.off.bout
 ## 1          0.1921875
 ## 2          0.7214286</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># bout specific data</span>
-<span class="kw">head</span>(bouts<span class="op">$</span>total_bouts)</code></pre></div>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># bout specific data</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(bouts<span class="sc">$</span>total_bouts)</span></code></pre></div>
 <pre><code>##         date    type start_time duration start_temp final_temp
 ## 1 2015-05-07  onbout      0.033     6.90     31.456     32.018
 ## 2 2015-05-07 offbout      5.783     1.55     30.457     10.374
@@ -282,11 +613,15 @@ my_plot <span class="op">+</span><span class="st"> </span>ggplot2<span class="op
 ## 6 2015-05-07 offbout      9.150     0.20     32.080     27.959</code></pre>
 <hr />
 <p>Please, if you use the package, cite it as:</p>
-<p>incR: a free new R package to analyse incubation behaviour. Pablo Capilla-Lasheras. bioRxiv 232520; doi: <a href="https://doi.org/10.1101/232520" class="uri">https://doi.org/10.1101/232520</a>.</p>
+<p>Capilla-Lasheras, P. (2018).incR: a new R package to analyse
+incubation behaviour. Journal of Avian Biology 49:e01710. doi: [<a href="https://doi.org/10.1111/jav.01710" class="uri">https://doi.org/10.1111/jav.01710</a>).</p>
 </div>
 </div>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->

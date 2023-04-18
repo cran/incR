@@ -4,8 +4,17 @@
 \alias{incRscan}
 \title{Automated scoring of incubation}
 \usage{
-incRscan(data, temp.name, lower.time, upper.time, sensitivity, temp.diff,
-  temp.diff.threshold, maxNightVariation, env.temp)
+incRscan(
+  data,
+  temp.name,
+  lower.time,
+  upper.time,
+  sensitivity,
+  temp.diff,
+  temp.diff.threshold,
+  maxNightVariation,
+  env.temp
+)
 }
 \arguments{
 \item{data}{data frame for analysis. It must contained four columns named as follow:
@@ -72,8 +81,8 @@ the associated publications.
 }
 
 \examples{
-# incR_procdata is a dataframe processed by incRprep and incRscan and
-# contains suitable information to run incRscan
+# incR_procdata is a dataframe processed by incRprep and incRenv.
+# it contains suitable information to run incRscan
 data(incR_procdata)
 
 incubation.analysis <- incRscan (data=incR_procdata, 

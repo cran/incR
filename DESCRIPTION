@@ -1,8 +1,8 @@
 Package: incR
 Type: Package
 Title: Analysis of Incubation Data
-Version: 1.1.0
-Date: 2018-03-17
+Version: 2.1.0
+Date: 2023-04-18
 Authors@R: person ("Pablo", "Capilla-Lasheras", email="pacapilla@gmail.com", role=c("aut",
     "cre"))
 Author: Pablo Capilla-Lasheras [aut, cre]
@@ -17,12 +17,13 @@ Description: Suite of functions to study animal incubation.
     edited by D. Charles Deeming and S. James Reynolds <doi:10.1093/acprof:oso/9780198718666.001.0001>.
 License: GPL-3
 Depends: R (>= 3.4.0), base, stats
-Imports: dplyr, ggplot2, maptools, lubridate, rgeos, utils
+Imports: ggplot2, suncalc, lubridate, utils
 Suggests: codetools, knitr, rmarkdown
 VignetteBuilder: knitr
 LazyData: true
-RoxygenNote: 6.0.1
+Encoding: UTF-8
+RoxygenNote: 7.2.1
 NeedsCompilation: no
-Packaged: 2018-03-21 15:13:47 UTC; pc395
+Packaged: 2023-04-18 17:10:44 UTC; pc395
 Repository: CRAN
-Date/Publication: 2018-03-21 15:25:24 UTC
+Date/Publication: 2023-04-18 19:20:16 UTC
